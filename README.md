@@ -5,6 +5,9 @@ payRoll.py
 - Creates HTML table containing work hours for every day of previous month
 - Sends table via e-mail (using Google's SMTP server)
 
+For usage:
+- create Google app password, obtain credentials.json file
+- fill in .env files with the necessary information
 
 Example output: (for 100,- Kč/hour)
 ---
