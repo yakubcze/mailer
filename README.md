@@ -6,7 +6,9 @@ payRoll.py
 - Sends table via e-mail (using Google's SMTP server)
 
 For usage:
-- create Google app password, obtain credentials.json file
+- create Google Service Account
+- share calendar to the Service Account (https://joshuaakanetuk.com/blog/how-to-use-google-calendar-py/)
+  
 - fill in .env files with the necessary information
 
 Example output: (for 100,- Kč/hour)
