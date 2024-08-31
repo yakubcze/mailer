@@ -22,7 +22,7 @@ SERVICE_ACCOUNT_KEY_FILE = 'service_account_key.json'
 
 def main():
     # Login to Google using Service Account (using pickle was not ideal due to login expiration - unable to launch in LXC)
-    credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE, scopes=SCOPES)
+    credentials = service_account.Credentials.from_service_account_file(f"{directory}/{SERVICE_ACCOUNT_KEY_FILE}", scopes=SCOPES)
     service = build('calendar', 'v3', credentials=credentials)
     
     if (this_month == 1): # If it is January of new year, get events for December of last year
