@@ -1,11 +1,7 @@
 import os
-import pickle
 from datetime import timedelta, date, datetime
 import calendar
-from tabulate import tabulate
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from dotenv import load_dotenv, find_dotenv # For .env files storing secrets
 
@@ -22,26 +18,12 @@ hourly_pay = int(os.getenv("HOURLY_PAY"))
 
 # Scopes needed for the API
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SERVICE_ACCOUNT_KEY_FILE = 'service_account_key.json'
 
 def main():
-    creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is created automatically when the authorization flow completes for the first time.
-    if os.path.exists(f'{directory}/token.pickle'):
-        with open(f'{directory}/token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(f'{directory}/credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
-
-    service = build('calendar', 'v3', credentials=creds)
+    # Login to Google using Service Account (using pickle was not ideal due to login expiration - unable to launch in LXC)
+    credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE, scopes=SCOPES)
+    service = build('calendar', 'v3', credentials=credentials)
     
     if (this_month == 1): # If it is January of new year, get events for December of last year
         events_list = getEvents(service, 12, this_year-1)
@@ -166,7 +148,7 @@ def createTable(month, year, events_list):
     table_html += '</table>'
 
     return(table_html)
-
+    
 
 if __name__ == '__main__':
     main()
